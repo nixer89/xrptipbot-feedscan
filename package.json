@@ -1,0 +1,38 @@
+{
+  "name": "xrptipbot-feedscan",
+  "version": "2.0.0",
+  "description": "NodeJs server which scans the xrptipbot feed and puts the transactions into a MongoDB",
+  "main": "server.ts",
+  "scripts": {
+    "start": "node dist/server.js",
+    "develop": "tsc && concurrently \"tsc -w\" \"nodemon dist/server.js\"",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nixer89/xrptipbot-feedscan.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nixer89/xrptipbot-feedscan/issues"
+  },
+  "homepage": "https://github.com/nixer89/xrptipbot-feedscan#readme",
+  "dependencies": {
+    "console-stamp": "^0.2.9",
+    "https-proxy-agent": "^2.2.2",
+    "mongoose": "^5.6.6",
+    "mosca": "^2.8.3",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/mongoose": "^5.5.9",
+    "@types/mosca": "^2.8.1",
+    "@types/node": "^10.14.13",
+    "@types/node-fetch": "^2.5.0",
+    "concurrently": "^4.1.1",
+    "nodemon": "^1.19.1",
+    "typescript": "^3.5.3"
+  }
+}
