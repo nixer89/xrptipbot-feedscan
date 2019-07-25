@@ -8,7 +8,7 @@ consoleStamp(console, { pattern: 'yyyy-mm-dd HH:MM:ss' });
 
 export class FeedScan {
     proxy = new HttpsProxyAgent("http://proxy:81");
-    useProxy = true;
+    useProxy = false;
 
     tipbotModel: mongoose.Model<any>;
     tipbotModelStandarized: mongoose.Model<any>;
@@ -32,9 +32,9 @@ export class FeedScan {
     
         console.log("[FEEDSCAN]: feed initialized");
 
-        //if not new collection, scan whole feed 5 min after startup to get back in sync completely
+        //DISABLED //if not new collection, scan whole feed 5 min after startup to get back in sync completely
         if(!isNewCollection)
-            setTimeout(() => this.scanFeed(0, 9000, true, false, true, updateStandarized), 300000);
+            setTimeout(() => this.scanFeed(0, 9000, true, false, true, updateStandarized), 60000);
     
         //scan whole feed every 24h to get in sync in case some transactions were missed!
         setInterval(() => this.scanFeed(0, 9000, true, false, true, updateStandarized), 86400000);
@@ -56,24 +56,25 @@ export class FeedScan {
         if(continueRequests || continueUntilEnd) {
             //ok we need to continue but set it to false as default
             continueRequests = false;
+            let tipBotFeedArray:any[];
             try {
                 console.log("[FEEDSCAN]: scanning feed with: " + this.feedURL+'?skip='+skip+'&limit='+limit);
-                let tipbotFeed = await fetch.default(this.feedURL+'?skip='+skip+'&limit='+limit, {agent: this.useProxy ? this.proxy : null});
+                let tipbotFeedResponsePlain = await fetch.default(this.feedURL+'?skip='+skip+'&limit='+limit, {agent: this.useProxy ? this.proxy : null});
     
-                if(tipbotFeed.ok) {
-                    let feedArray = await tipbotFeed.json();
+                if(tipbotFeedResponsePlain.ok) {
+                    let feedResponse = await tipbotFeedResponsePlain.json();
     
                     //we have entries -> store them in db!
-                    if(feedArray && feedArray.feed && feedArray.feed.length > 0) {
-                        console.log("[FEEDSCAN]: received " + feedArray.feed.length + " entries.");
+                    if(feedResponse && feedResponse.feed && feedResponse.feed.length > 0) {
+                        console.log("[FEEDSCAN]: received " + feedResponse.feed.length + " entries.");
                         if(newCollection)
                             //we have an array so run at least one more time if we are in initialization phase
                             continueRequests = true;
 
-                        let tipBotFeed:any[] = feedArray.feed.reverse();
+                        tipBotFeedArray = feedResponse.feed.reverse();
                         //insert all step by step and ignore duplicates
                         try {
-                            for(let transaction of tipBotFeed) {
+                            for(let transaction of tipBotFeedArray) {
                                 //insert feed to db
                                 transaction.momentAsDate = new Date(transaction.moment);
                                 let result = await this.tipbotModel.updateOne({id: transaction.id}, transaction, {upsert: true});
@@ -101,19 +102,28 @@ export class FeedScan {
                             continueRequests = false;
                         }
                     } else {
-                        if(!feedArray)
+                        if(!feedResponse)
                             console.log("[FEEDSCAN]: feedArray not available");
-                        else if(!feedArray.feed)
+                        else if(!feedResponse.feed)
                             console.log("[FEEDSCAN]: feedArray.feed not available");
-                        else if(feedArray.feed.length <= 0)
+                        else if(feedResponse.feed.length <= 0)
                             console.log("[FEEDSCAN]: feedArray.feed.length <= 0");
-                        //nothing to do anymore -> cancel execution
-                        continueRequests = continueUntilEnd = false;
+
+                        //repeat request!
+                        if(!oneAndOnlyRepeat)
+                            throw "Error";
+                        else
+                            //nothing to do anymore -> cancel execution
+                            continueRequests = continueUntilEnd = false;
                     }
                 } else {
                     console.log("[FEEDSCAN]: tipbotFeed.ok is not ok!")
-                    //something is wrong -> cancel request
-                    continueRequests = continueUntilEnd = false;
+                    //repeat request!
+                    if(!oneAndOnlyRepeat)
+                        throw "Error";
+                    else
+                        //something is wrong -> cancel request
+                        continueRequests = continueUntilEnd = false;
                 }
             } catch (err) {
                 //nothing to do here.
@@ -121,13 +131,12 @@ export class FeedScan {
                 console.log("[FEEDSCAN]: " + JSON.stringify(err));
                 //repeat only one time if we have an json error -> may not occure a second time!
                 if(!oneAndOnlyRepeat && err && err.message && err.message.startsWith("invalid json response body")) {
-                    oneAndOnlyRepeat = true;
-                    return this.scanFeed(skip, limit, continueRequests, newCollection, continueUntilEnd, updateStandarized, useMQTT, oneAndOnlyRepeat);
+                    return this.scanFeed(skip, limit, continueRequests, newCollection, continueUntilEnd, updateStandarized, useMQTT, true);
                 }
                 continueRequests = continueUntilEnd = false;
             }
     
-            return this.scanFeed(skip+=limit, limit, continueRequests, newCollection, continueUntilEnd, updateStandarized, useMQTT);
+            return this.scanFeed(skip+=(tipBotFeedArray && tipBotFeedArray.length ? tipBotFeedArray.length:limit), limit, continueRequests, newCollection, continueUntilEnd, updateStandarized, useMQTT);
         }
     
         return Promise.resolve();
