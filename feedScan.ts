@@ -36,8 +36,8 @@ export class FeedScan {
         if(!isNewCollection)
             setTimeout(() => this.scanFeed(0, 9000, true, false, true, updateStandarized), 60000);
     
-        //scan whole feed every 24h to get in sync in case some transactions were missed!
-        setInterval(() => this.scanFeed(0, 9000, true, false, true, updateStandarized), 86400000);
+        //scan whole feed once a week to get in sync in case some transactions were missed!
+        setInterval(() => this.scanFeed(0, 9000, true, false, true, updateStandarized), 604800000);
 
         //start scanning feed
         this.scanFeedHandler(updateStandarized, useMQTT);
