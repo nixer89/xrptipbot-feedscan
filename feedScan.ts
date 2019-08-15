@@ -32,12 +32,12 @@ export class FeedScan {
     
         console.log("[FEEDSCAN]: feed initialized");
 
-        //DISABLED //if not new collection, scan whole feed 5 min after startup to get back in sync completely
+        //if not new collection, scan whole feed 5 min after startup to get back in sync completely
         if(!isNewCollection)
-            setTimeout(() => this.scanFeed(0, 9000, true, false, true, updateStandarized), 60000);
+            setTimeout(() => this.scanFeed(0, 5000, true, false, true, updateStandarized), 60000);
     
         //scan whole feed once a week to get in sync in case some transactions were missed!
-        setInterval(() => this.scanFeed(0, 9000, true, false, true, updateStandarized), 604800000);
+        setInterval(() => this.scanFeed(0, 5000, true, false, true, updateStandarized), 604800000);
 
         //start scanning feed
         this.scanFeedHandler(updateStandarized, useMQTT);
@@ -45,7 +45,7 @@ export class FeedScan {
 
     async scanFeedHandler(updateStandarized: boolean, useMQTT: boolean) {
         //on first call, start scanning feed.
-        await this.scanFeed(0, 50, true, false, false, updateStandarized, useMQTT);
+        await this.scanFeed(0, 200, true, false, false, updateStandarized, useMQTT);
 
         //if scanning feed done, set timer to scan feed in 1 minute again!
         setTimeout(() => this.scanFeedHandler(updateStandarized, useMQTT), 60000);
