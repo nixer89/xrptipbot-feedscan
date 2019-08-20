@@ -1,6 +1,6 @@
 {
   "name": "xrptipbot-feedscan",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "NodeJs server which scans the xrptipbot feed and puts the transactions into a MongoDB",
   "main": "server.ts",
   "scripts": {
