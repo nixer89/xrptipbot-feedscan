@@ -1,11 +1,12 @@
 import * as mosca from 'mosca';
 
 let server:mosca.Server;
+let dbIp = process.env.DB_IP || '127.0.0.1';
 
 let pubsubsettings = {
     //using ascoltatore
     type: 'mongo',		
-    url: 'mongodb://localhost:27017/mqtt',
+    url: 'mongodb://'+dbIp+':27017/mqtt',
     pubsubCollection: 'ascoltatori',
     mongo: {}
 };
