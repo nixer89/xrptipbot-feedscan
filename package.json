@@ -1,6 +1,6 @@
 {
   "name": "xrptipbot-feedscan",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "NodeJs server which scans the xrptipbot feed and puts the transactions into a MongoDB",
   "main": "server.ts",
   "scripts": {
@@ -22,17 +22,17 @@
   "dependencies": {
     "console-stamp": "^0.2.9",
     "https-proxy-agent": "^2.2.2",
-    "mongoose": "^5.6.9",
+    "mongoose": "^5.6.13",
     "mosca": "^2.8.3",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
-    "@types/mongoose": "^5.5.12",
+    "@types/mongoose": "^5.5.17",
     "@types/mosca": "^2.8.1",
-    "@types/node": "^10.14.15",
+    "@types/node": "^10.14.17",
     "@types/node-fetch": "^2.5.0",
-    "concurrently": "^4.1.1",
-    "nodemon": "^1.19.1",
-    "typescript": "^3.5.3"
+    "concurrently": "^4.1.2",
+    "nodemon": "^1.19.2",
+    "typescript": "^3.6.2"
   }
 }
