@@ -36,8 +36,8 @@ export class FeedScan {
         if(!isNewCollection)
             setTimeout(() => this.scanFeed(0, 5000, true, false, true, updateStandarized), 60000);
     
-        //scan whole feed once a week to get in sync in case some transactions were missed!
-        setInterval(() => this.scanFeed(0, 5000, true, false, true, updateStandarized), 604800000);
+        //scan whole feed every two days to get in sync in case some transactions are missing!
+        setInterval(() => this.scanFeed(0, 5000, true, false, true, updateStandarized), 172800000);
 
         //start scanning feed
         this.scanFeedHandler(updateStandarized, useMQTT);
@@ -230,8 +230,7 @@ export class FeedScan {
 
         //set user_network and to_network when transaction happened on same network
         if(standarizedTransaction.network != 'btn'
-            && standarizedTransaction.network != 'app'
-                && standarizedTransaction.network != 'internal') {
+            && standarizedTransaction.network != 'app') {
 
                     if(!standarizedTransaction.user_network)
                         standarizedTransaction.user_network = standarizedTransaction.network;
