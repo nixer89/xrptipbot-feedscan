@@ -6,8 +6,9 @@ consoleStamp(console, { pattern: 'yyyy-mm-dd HH:MM:ss' });
 
 let connection: mongoose.Connection;
 let tipCollectionName:string = "FeedCollection";
-let ilpCollectionName:string = "ILPFeedCollection";
 let tipCollectionNameStandarized:string = "FeedCollectionStandarized";
+let ilpCollectionName:string = "ILPFeedCollection";
+let ilpCollectionNameStandarized:string = "ILPFeedCollectionStandarized";
 var Schema = mongoose.Schema;
 let dbIp = process.env.DB_IP || "127.0.0.1"
 
@@ -40,24 +41,36 @@ var tipBotSchemaILP:mongoose.Schema = new Schema({
 });
 
 tipBotSchema = tipBotSchema.index({id: -1}, {unique: true});
-tipBotSchema = tipBotSchema.index({momentAsDate: -1}, {unique: false});
-tipBotSchema = tipBotSchema.index({xrp: 1}, {unique: false});
+tipBotSchema = tipBotSchema.index({momentAsDate: -1});
+tipBotSchema = tipBotSchema.index({xrp: 1});
+tipBotSchema = tipBotSchema.index({user_id: 1});
+tipBotSchema = tipBotSchema.index({to_id: 1});
+tipBotSchema = tipBotSchema.index({type: 1, network: 1});
+tipBotSchema = tipBotSchema.index({user: "text", to: "text"});
 
 tipBotSchemaILP = tipBotSchemaILP.index({id: -1}, {unique: true});
-tipBotSchemaILP = tipBotSchemaILP.index({momentAsDate: -1}, {unique: false});
-tipBotSchemaILP = tipBotSchemaILP.index({xrp: 1}, {unique: false});
+tipBotSchemaILP = tipBotSchemaILP.index({momentAsDate: -1});
+tipBotSchemaILP = tipBotSchemaILP.index({xrp: 1});
+tipBotSchemaILP = tipBotSchemaILP.index({user_id: 1});
+tipBotSchemaILP = tipBotSchemaILP.index({to_id: 1});
+tipBotSchemaILP = tipBotSchemaILP.index({type: 1, network: 1});
+tipBotSchemaILP = tipBotSchemaILP.index({user: "text", to: "text"});
 
 
 export function initTipDB(): Promise<boolean> {
     return initDB(tipCollectionName);
 }
 
+export function initTipDBStandarized(): Promise<boolean> {
+    return initDB(tipCollectionNameStandarized);
+}
+
 export function initILPDB(): Promise<boolean> {
     return initDB(ilpCollectionName);
 }
 
-export function initTipDBStandarized(): Promise<boolean> {
-    return initDB(tipCollectionNameStandarized);
+export function initILPDBStandarized(): Promise<boolean> {
+    return initDB(ilpCollectionNameStandarized);
 }
 
 async function initDB(collectionName: string): Promise<boolean> {
@@ -82,12 +95,16 @@ export function getNewDbModelTips(): Promise<mongoose.Model<any>> {
     return getNewDbModel(tipCollectionName, tipBotSchema);
 }
 
+export function getNewDbModelTipsStandarized(): Promise<mongoose.Model<any>> {
+    return getNewDbModel(tipCollectionNameStandarized, tipBotSchema);
+}
+
 export function getNewDbModelILP(): Promise<mongoose.Model<any>> {
     return getNewDbModel(ilpCollectionName, tipBotSchemaILP);
 }
 
-export function getNewDbModelTipsStandarized(): Promise<mongoose.Model<any>> {
-    return getNewDbModel(tipCollectionNameStandarized, tipBotSchema);
+export function getNewDbModelILPStandarized(): Promise<mongoose.Model<any>> {
+    return getNewDbModel(ilpCollectionNameStandarized, tipBotSchemaILP);
 }
 
 async function getNewDbModel(collectionName: string, schema: mongoose.Schema): Promise<mongoose.Model<any>> {

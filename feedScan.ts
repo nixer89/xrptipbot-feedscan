@@ -235,7 +235,7 @@ export class FeedScan {
                     if(!standarizedTransaction.user_network)
                         standarizedTransaction.user_network = standarizedTransaction.network;
 
-                    if(standarizedTransaction.type != 'deposit' && standarizedTransaction.type != 'withdraw') {
+                    if(standarizedTransaction.type != 'deposit' && standarizedTransaction.type != 'withdraw' && standarizedTransaction.type != 'ILP deposit') {
                         //set also to_network when not deposit or withdraw
                         if(!standarizedTransaction.to_network)
                             standarizedTransaction.to_network = standarizedTransaction.network;
