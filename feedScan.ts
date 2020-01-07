@@ -130,7 +130,7 @@ export class FeedScan {
                 console.log("[FEEDSCAN]: an error occured while calling api or inserting data into db")
                 console.log("[FEEDSCAN]: " + JSON.stringify(err));
                 //repeat only one time if we have an json error -> may not occure a second time!
-                if(!oneAndOnlyRepeat && err && err.message && err.message.startsWith("invalid json response body")) {
+                if(!oneAndOnlyRepeat && err && (err === 'Error' || (err.message && err.message.startsWith("invalid json response body")))) {
                     return this.scanFeed(skip, limit, continueRequests, newCollection, continueUntilEnd, updateStandarized, useMQTT, true);
                 }
                 continueRequests = continueUntilEnd = false;
