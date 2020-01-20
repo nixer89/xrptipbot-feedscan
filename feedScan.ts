@@ -28,7 +28,7 @@ export class FeedScan {
             mqtt.init();
         
         //initialize feed on startup -> create new collection or add missing transactions
-        await this.scanFeed(0, isNewCollection ? 1000 : 200, true, isNewCollection, false, updateStandarized, !isNewCollection && useMQTT);
+        await this.scanFeed(0, isNewCollection ? 5000 : 200, true, isNewCollection, false, updateStandarized, !isNewCollection && useMQTT);
     
         console.log("[FEEDSCAN]: feed initialized");
 

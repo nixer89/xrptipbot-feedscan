@@ -75,7 +75,7 @@ export function initILPDBStandarized(): Promise<boolean> {
 
 async function initDB(collectionName: string): Promise<boolean> {
     console.log("[DB]: connecting to mongo db with collection: " + collectionName);
-    await mongoose.connect('mongodb://'+dbIp+':27017/'+collectionName, { useCreateIndex: true, useNewUrlParser: true});
+    await mongoose.connect('mongodb://'+dbIp+':27017/'+collectionName, { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true});
     connection = mongoose.connection;
 
     connection.on('open', ()=>{console.log("[DB]: Connection to MongoDB established")});
@@ -109,7 +109,7 @@ export function getNewDbModelILPStandarized(): Promise<mongoose.Model<any>> {
 
 async function getNewDbModel(collectionName: string, schema: mongoose.Schema): Promise<mongoose.Model<any>> {
     console.log("[DB]: connecting to mongo db with collection: " + collectionName +" and an schema");
-    let connection:mongoose.Connection = await mongoose.createConnection('mongodb://'+dbIp+':27017/'+collectionName, { useCreateIndex: true, useNewUrlParser: true});
+    let connection:mongoose.Connection = await mongoose.createConnection('mongodb://'+dbIp+':27017/'+collectionName, { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true});
     connection.on('open', ()=>{console.log("[DB]: Connection to MongoDB established")});
     connection.on('error', ()=>{console.log("[DB]: Connection to MongoDB could NOT be established")});
 
