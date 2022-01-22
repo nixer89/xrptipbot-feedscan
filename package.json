@@ -24,7 +24,7 @@
     "https-proxy-agent": "^2.2.4",
     "mongoose": "^5.6.13",
     "mosca": "^2.8.3",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^3.1.1"
   },
   "devDependencies": {
     "@types/mongoose": "^5.5.17",
